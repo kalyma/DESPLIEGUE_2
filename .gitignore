@@ -1,0 +1,58 @@
+# Archivo .gitignore para el proyecto Skool Scraper
+
+## Variables de entorno
+variables.env
+.env
+*.env
+
+## Credenciales y configuraciones sensibles
+/config.py
+/secrets/
+/credentials/
+
+## Archivos de salida del scraper
+/output/*
+!output/.gitkeep  # Permite mantener el directorio vacío
+
+## Archivos de registro
+*.log
+/logs/
+
+## Entornos virtuales
+venv/
+ENV/
+env/
+
+## Archivos del sistema
+.DS_Store
+Thumbs.db
+
+## Archivos de IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+## Python
+__pycache__/
+*.py[cod]
+*$py.class
+.python-version
+
+## Cache y bases de datos locales
+*.sqlite3
+*.db
+
+## ChromeDriver y binarios
+/chromedriver*
+/geckodriver*
+
+## Archivos temporales
+*.tmp
+*.temp
+
+## Archivos CSV generados (opcional, si quieres versionarlos quita esta línea)
+*.csv
+
+## Archivos de Selenium
+/webdrivers/

@@ -1,0 +1,10 @@
+pregunta sobre requirements
+
+tengo la carpeta DESPLIEGUE_2 con estos archivos "chromedriver.exe,
+env,
+Estructura_django.txt,
+GDSkool_1_1.py,
+lista.txt,
+Miembros_Skool_27_06_2025.csv,
+skool_members_scraper.log,
+variables.env", donde env es el ambiente creado para la carpeta, mi pregunta es: necesito los requerimientos, puedo usar este comando para obtenerlos "pip freeze > requirements.txt", esta carpeta si hago esto, ¿queda dentro de la carpeta env?, esta bien que quede alli, o lo mejor es hacerla dentro de DESPLIEGUE_2?

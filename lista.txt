@@ -1,0 +1,8 @@
+chromedriver.exe
+env
+Estructura_django.txt
+GDSkool_1_1.py
+lista.txt
+Miembros_Skool_27_06_2025.csv
+skool_members_scraper.log
+variables.env

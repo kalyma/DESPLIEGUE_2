@@ -1,0 +1,57 @@
+skool_scraper_project/
+│
+├── scraper_app/
+│   ├── management/
+│   │   └── commands/
+│   │       └── run_scraper.py
+│   ├── models.py
+│   ├── tasks.py
+│   ├── views.py
+│   └── admin.py
+│
+├── skool_scraper_project/
+│   ├── settings.py
+│   ├── urls.py
+│   └── __init__.py
+│
+├── scripts/
+│   └── GDSkool_1_1.py  # Tu script original
+│
+├── templates/
+│   └── scraper/
+│       └── dashboard.html
+│
+├── static/
+│   └── css/
+│       └── styles.css
+│
+└── manage.py
+
+DESPLIEGUE_2/
+│
+├── scraper_app/
+│   ├── management/
+│   │   └── commands/
+│   │       └── run_scraper.py
+│   ├── models.py
+│   ├── tasks.py
+│   ├── views.py
+│   └── admin.py
+│
+├── skool_scraper_project/
+│   ├── settings.py
+│   ├── urls.py
+│   └── __init__.py
+│
+├── scripts/
+│   └── GDSkool_1_1.py  # Tu script original
+│
+├── templates/
+│   └── scraper/
+│       └── dashboard.html
+│
+├── static/
+│   └── css/
+│       └── styles.css
+│
+└── manage.py
