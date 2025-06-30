@@ -1,4 +1,4 @@
 #!/bin/bash
 pip install --upgrade pip
 pip install -r requirements.txt
-python GDSkool.py
+python GDSkool_1_1.py
