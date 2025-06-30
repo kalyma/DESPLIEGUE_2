@@ -55,6 +55,7 @@ __pycache__/
 *.csv
 Estructura_django.txt
 lista.txt
+*.jpg
 
 ## Archivos de Selenium
 /webdrivers/

@@ -9,9 +9,9 @@ import ctypes
 import logging
 import requests
 import pandas as pd
-import tkinter as tk
+#import tkinter as tk
 import tempfile
-from tkinter import messagebox
+#from tkinter import messagebox
 from datetime import datetime, timedelta
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
