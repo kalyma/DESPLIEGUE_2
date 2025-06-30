@@ -53,6 +53,8 @@ __pycache__/
 
 ## Archivos CSV generados (opcional, si quieres versionarlos quita esta línea)
 *.csv
+Estructura_django.txt
+lista.txt
 
 ## Archivos de Selenium
 /webdrivers/

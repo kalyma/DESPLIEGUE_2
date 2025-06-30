@@ -2,6 +2,7 @@ pandas==2.3.0
 psycopg2_binary==2.9.10
 pyodbc==5.2.0
 Requests==2.32.4
+rich==13.7.0
 selenium==4.33.0
 SQLAlchemy==2.0.41
 webdriver_manager==4.0.2
