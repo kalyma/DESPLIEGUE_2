@@ -154,7 +154,6 @@ class SkoolCoursesScraper:
         self.last_progress = -1
 
         self._setup_logging()
-        self._prevent_system_sleep()
         self._init_chrome_driver()
         self._setup_configuration()
         self._setup_database_connection()
