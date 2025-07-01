@@ -5,7 +5,6 @@ import csv
 import sys
 import math
 import time
-import ctypes
 import logging
 import requests
 import pandas as pd
@@ -172,13 +171,6 @@ class SkoolCoursesScraper:
         )
         self.logger = logging.getLogger(__name__)
         
-
-    def _prevent_system_sleep(self):
-        """Previene que el sistema entre en modo de suspensión"""
-        self.ES_CONTINUOUS = 0x80000000
-        self.ES_SYSTEM_REQUIRED = 0x00000001
-        ctypes.windll.kernel32.SetThreadExecutionState(
-            self.ES_CONTINUOUS | self.ES_SYSTEM_REQUIRED)
 
     def _init_chrome_driver(self):
         """Inicializa y configura el ChromeDriver"""
@@ -959,15 +951,6 @@ class SkoolCoursesScraper:
         except Exception as e:
             self.logger.error(f"Error al guardar datos de ejecución en PostgreSQL: {str(e)}", exc_info=True)
 
-    def _cleanup_resources(self):
-        """Limpia los recursos del sistema"""
-        try:
-            if hasattr(self, 'driver') and self.driver:
-                self.driver.quit()
-        except Exception as e:
-            self.logger.error(f"Error al limpiar recursos: {e}", exc_info=True)
-        finally:
-            ctypes.windll.kernel32.SetThreadExecutionState(self.ES_CONTINUOUS)
 
 if __name__ == "__main__":
     try:
