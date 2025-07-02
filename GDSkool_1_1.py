@@ -290,11 +290,11 @@ class SkoolCoursesScraper:
         try:
             # Usar variables de entorno sin valores por defecto
             db_params = {
-                'dbname': 'antoecom_skool',       # Nombre fijo de la DB
-                'user': 'sa',                     # Usuario fijo
-                'password': os.getenv('DB_PASSWORD'),  # La contraseña SÍ debe ser variable
-                'host': 'dpg-d1a36mje5dus73e6har0-a', # Hostname fijo
-                'port': '5432'                    # Puerto fijo
+            'dbname': os.getenv('DB_NAME'),          # Obligatorio
+            'user': os.getenv('DB_USER'),            # Obligatorio (debe ser 'sa')
+            'password': os.getenv('DB_PASSWORD'),    # Obligatorio (EJaCIWj2...)
+            'host': os.getenv('DB_HOST'),            # Obligatorio (host completo)
+            'port': os.getenv('DB_PORT', '5432')     # Opcional (default 5432)
             }
             
             # Verificación de variables requeridas
@@ -307,7 +307,7 @@ class SkoolCoursesScraper:
                 f"postgresql://{db_params['user']}:"
                 f"{urllib.parse.quote_plus(db_params['password'])}@"
                 f"{db_params['host']}:{db_params['port']}/"
-                f"{db_params['dbname']}"
+                f"{db_params['dbname']}?sslmode=require"
             )
             
             # Configurar el engine con pool_recycle para evitar timeouts
