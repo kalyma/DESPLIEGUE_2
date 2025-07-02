@@ -181,30 +181,31 @@ class SkoolCoursesScraper:
         """Inicializa y configura el ChromeDriver"""
         self.chrome_options = Options()
         self._configure_chrome_options()
+        
+        # Usa Chrome desde webdriver-manager
         self.service = Service(ChromeDriverManager().install())
-        self.driver = None
+        self.driver = webdriver.Chrome(
+            service=self.service,
+            options=self.chrome_options
+        )
 
     def _configure_chrome_options(self):
-        """Configura las opciones de Chrome optimizadas"""
+        self.chrome_options = Options()
+        
+        # Configuración especial para Render/Linux
+        self.chrome_options.binary_location = "/usr/bin/chromium-browser"  # Ruta a Chromium en Render
+        
         options = [
-            "--ignore-certificate-errors",
-            "--ignore-ssl-errors",
-            "--start-maximized",
-            "--disable-dev-shm-usage",
-            "--no-sandbox",
-            "--disable-extensions",
-            "--disable-gpu",
             "--headless=new",
-            "--disable-blink-features=AutomationControlled",
-            "--log-level=3",
-            "--disable-logging",
-            "--disable-software-rasterizer",  # Evita el fallback a software
-            "--disable-gpu-compositing",
-            "--disable-webgl",  # Desactiva WebGL si no lo necesitas
-            "--enable-features=NetworkService"
+            "--no-sandbox",
+            "--disable-dev-shm-usage",
+            "--disable-gpu",
+            "--ignore-certificate-errors",
+            "--disable-extensions"
         ]
 
-        self.chrome_options = Options()
+        self.chrome_options.binary_location = "/usr/bin/google-chrome"
+        
         for option in options:
             self.chrome_options.add_argument(option)
 
