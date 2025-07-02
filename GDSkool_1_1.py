@@ -25,7 +25,7 @@ from sqlalchemy import create_engine, text
 import urllib.parse
 import psycopg2
 from dotenv import load_dotenv
-load_dotenv('variables.env')
+load_dotenv()
 from typing import Dict, Optional
 
 def validate_environment_variables() -> Dict[str, str]:
