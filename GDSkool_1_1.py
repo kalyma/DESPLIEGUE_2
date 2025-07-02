@@ -153,10 +153,16 @@ class SkoolCoursesScraper:
         self.current_page = 1  # Página actual para el progreso
         self.last_progress = -1
 
-        self._setup_logging()
-        self._init_chrome_driver()
-        self._setup_configuration()
-        self._setup_database_connection()
+        try:
+            self._setup_logging()
+            if not self._setup_database_connection():  # Ahora retorna True/False
+                self.logger.warning("Conexión a DB fallida, continuando sin DB")
+            self._init_chrome_driver()
+            self._setup_configuration()
+        except Exception as e:
+            self.logger.error(f"Error en inicialización: {e}")
+            raise
+        
 
     def _setup_logging(self):
         """Configura el sistema de logging"""
@@ -279,33 +285,32 @@ class SkoolCoursesScraper:
         
 
     def _setup_database_connection(self):
-        """Configura la conexión a PostgreSQL"""
-        db_params = {
-            'dbname': os.getenv('DB_NAME', 'antoecom_skool'),
-            'user': os.getenv('DB_USER', 'postgres'),
-            'password': os.getenv('DB_PASSWORD', '12345'),
-            'host': os.getenv('DB_HOST', 'localhost'),
-            'port': os.getenv('DB_PORT', '5432')
-        }
-
-        # Cadena de conexión para psycopg2
-        self.connection_string = f"dbname='{db_params['dbname']}' user='{db_params['user']}' password='{db_params['password']}' host='{db_params['host']}' port='{db_params['port']}'"
-        
-        # Cadena de conexión para SQLAlchemy
-        self.sqlalchemy_conn_str = f"postgresql://{db_params['user']}:{urllib.parse.quote_plus(db_params['password'])}@{db_params['host']}:{db_params['port']}/{db_params['dbname']}"
-
+        """Configura la conexión a PostgreSQL con mejor manejo de errores"""
         try:
-            #import psycopg2
-            # Verificar conexión directa
-            conn = psycopg2.connect(self.connection_string)
-            conn.close()
+            db_params = {
+                'dbname': os.getenv('DB_NAME'),
+                'user': os.getenv('DB_USER'),
+                'password': os.getenv('DB_PASSWORD'),
+                'host': os.getenv('DB_HOST'),
+                'port': os.getenv('DB_PORT', '5432')
+            }
             
-            # Configurar SQLAlchemy engine
+            if None in db_params.values():
+                self.logger.warning("Faltan variables de entorno para DB")
+                return False
+                
+            self.sqlalchemy_conn_str = f"postgresql://{db_params['user']}:{urllib.parse.quote_plus(db_params['password'])}@{db_params['host']}:{db_params['port']}/{db_params['dbname']}"
             self.engine = create_engine(self.sqlalchemy_conn_str)
-            self.logger.info("Conexión a PostgreSQL configurada correctamente")
+            
+            # Test connection
+            with self.engine.connect() as test_conn:
+                test_conn.execute(text("SELECT 1"))
+                
+            self.logger.info("Conexión a DB establecida")
             return True
+            
         except Exception as e:
-            self.logger.error(f"Error al conectar a PostgreSQL: {str(e)}")
+            self.logger.error(f"Error al conectar a DB: {e}")
             self.engine = None
             return False
 
@@ -882,8 +887,7 @@ class SkoolCoursesScraper:
                 self._save_execution_data(end_time, execution_time)
             except Exception as e:
                 self.logger.error(f"Error al guardar resultados: {e}", exc_info=True)
-            finally:
-                self._cleanup_resources()
+
 
     def _log_execution_summary(self, end_time, execution_time):
         """Registra el resumen de la ejecución"""
@@ -915,7 +919,8 @@ class SkoolCoursesScraper:
     def _save_execution_data(self, end_time, execution_time):
         """Guarda los datos de ejecución en PostgreSQL"""
         try:
-            if not hasattr(self, 'engine'):
+            if not hasattr(self, 'engine') or self.engine is None:
+                self.logger.warning("No se guardarán datos de ejecución (sin conexión a DB)")
                 return
 
             # Consulta adaptada para SQLAlchemy con PostgreSQL
