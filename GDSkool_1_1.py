@@ -193,7 +193,7 @@ class SkoolCoursesScraper:
         self.chrome_options = Options()
         
         # Configuración especial para Render/Linux
-        self.chrome_options.binary_location = "/usr/bin/chromium-browser"  # Ruta a Chromium en Render
+        #self.chrome_options.binary_location = "/usr/bin/chromium-browser"  # Ruta a Chromium en Render
         
         options = [
             "--headless=new",
@@ -286,32 +286,46 @@ class SkoolCoursesScraper:
         
 
     def _setup_database_connection(self):
-        """Configura la conexión a PostgreSQL con mejor manejo de errores"""
+        """Configura la conexión a PostgreSQL con las credenciales de Render"""
         try:
+            # Usar variables de entorno sin valores por defecto
             db_params = {
-                'dbname': os.getenv('DB_NAME'),
-                'user': os.getenv('DB_USER'),
-                'password': os.getenv('DB_PASSWORD'),
-                'host': os.getenv('DB_HOST'),
-                'port': os.getenv('DB_PORT', '5432')
+                'dbname': 'antoecom_skool',       # Nombre fijo de la DB
+                'user': 'sa',                     # Usuario fijo
+                'password': os.getenv('DB_PASSWORD'),  # La contraseña SÍ debe ser variable
+                'host': 'dpg-d1a36mje5dus73e6har0-a', # Hostname fijo
+                'port': '5432'                    # Puerto fijo
             }
             
-            if None in db_params.values():
-                self.logger.warning("Faltan variables de entorno para DB")
+            # Verificación de variables requeridas
+            if None in [db_params['host'], db_params['user'], db_params['password'], db_params['dbname']]:
+                self.logger.warning("Faltan variables de entorno para DB - Continuando sin conexión a DB")
                 return False
                 
-            self.sqlalchemy_conn_str = f"postgresql://{db_params['user']}:{urllib.parse.quote_plus(db_params['password'])}@{db_params['host']}:{db_params['port']}/{db_params['dbname']}"
-            self.engine = create_engine(self.sqlalchemy_conn_str)
+            # Cadena de conexión para SQLAlchemy
+            self.sqlalchemy_conn_str = (
+                f"postgresql://{db_params['user']}:"
+                f"{urllib.parse.quote_plus(db_params['password'])}@"
+                f"{db_params['host']}:{db_params['port']}/"
+                f"{db_params['dbname']}"
+            )
             
-            # Test connection
+            # Configurar el engine con pool_recycle para evitar timeouts
+            self.engine = create_engine(
+                self.sqlalchemy_conn_str,
+                pool_recycle=300,  # Reciclar conexiones cada 5 minutos
+                connect_args={'connect_timeout': 10}  # Timeout de 10 segundos
+            )
+            
+            # Test de conexión
             with self.engine.connect() as test_conn:
                 test_conn.execute(text("SELECT 1"))
                 
-            self.logger.info("Conexión a DB establecida")
+            self.logger.info("Conexión a PostgreSQL establecida correctamente")
             return True
             
         except Exception as e:
-            self.logger.error(f"Error al conectar a DB: {e}")
+            self.logger.error(f"Error al conectar a PostgreSQL: {str(e)}")
             self.engine = None
             return False
 
