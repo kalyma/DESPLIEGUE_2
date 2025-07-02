@@ -87,6 +87,11 @@ def validate_environment_variables() -> Dict[str, str]:
                 'error_msg': 'Debe ser True o False'
             }
         }
+        print("Valores FINALES usados para PostgreSQL:", {
+            'dbname': os.getenv('DB_NAME'),
+            'user': os.getenv('DB_USER'),
+            'host': os.getenv('DB_HOST')
+        })
 
         validated_vars = {}
         for var_name, config in required_vars.items():
